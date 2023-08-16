@@ -252,19 +252,18 @@ impl<'a> Scanner<'a> {
                 }
             }
         }
-        return token;
+        token
     }
 
     fn get_next_char(&mut self) -> Option<char> {
-        let ch = match self.next_char {
+        match self.next_char {
             Some(_) => {
                 let ch = self.next_char;
                 self.next_char = None;
                 ch
             }
             None => self.it.next(),
-        };
-        ch
+        }
     }
 
     fn get_peek_char(&mut self) -> Option<char> {
@@ -299,13 +298,40 @@ end";
         let mut scanner = Scanner::new(input);
         let mut tokens = vec![];
         let rets = vec![
-            Token::Read,Token::Id("x".into()),Token::Semi,Token::If,Token::Num("0".into()),
-            Token::Lt, Token::Id("x".into()),Token::Then,Token::Id("fact".into()),Token::Assign,
-            Token::Num("1".into()),Token::Semi,Token::Repeat,Token::Id("fact".into()),Token::Assign,
-            Token::Id("fact".into()),Token::Times,Token::Id("x".into()),Token::Semi,Token::Id("x".into()),
-            Token::Assign,Token::Id("x".into()),Token::Minus,Token::Num("1".into()),Token::Until,
-            Token::Id("x".into()), Token::Eq, Token::Num("0".into()),Token::Semi,Token::Write,
-            Token::Id("fact".into()), Token::End,Token::EndFile];
+            Token::Read,
+            Token::Id("x".into()),
+            Token::Semi,
+            Token::If,
+            Token::Num("0".into()),
+            Token::Lt,
+            Token::Id("x".into()),
+            Token::Then,
+            Token::Id("fact".into()),
+            Token::Assign,
+            Token::Num("1".into()),
+            Token::Semi,
+            Token::Repeat,
+            Token::Id("fact".into()),
+            Token::Assign,
+            Token::Id("fact".into()),
+            Token::Times,
+            Token::Id("x".into()),
+            Token::Semi,
+            Token::Id("x".into()),
+            Token::Assign,
+            Token::Id("x".into()),
+            Token::Minus,
+            Token::Num("1".into()),
+            Token::Until,
+            Token::Id("x".into()),
+            Token::Eq,
+            Token::Num("0".into()),
+            Token::Semi,
+            Token::Write,
+            Token::Id("fact".into()),
+            Token::End,
+            Token::EndFile,
+        ];
         loop {
             let token = scanner.get_token2();
             tokens.push(token.clone());
@@ -336,13 +362,42 @@ end";
         let mut scanner = Scanner::new(input);
         let mut tokens = vec![];
         let rets = vec![
-            Token::Read,Token::Id("x".into()),Token::Semi,Token::If,Token::Num("0".into()),
-            Token::Lt, Token::Id("x".into()),Token::Then,Token::Id("fact".into()),Token::Assign,
-            Token::Num("1".into()),Token::Semi,Token::Repeat,Token::Id("fact".into()),Token::Assign,
-            Token::Id("fact".into()),Token::Times,Token::Id("x".into()),Token::Semi,Token::Id("x".into()),
-            Token::Assign,Token::Id("x".into()),Token::Minus,Token::Num("1".into()),Token::Semi, Token::Until,
-            Token::Id("x".into()), Token::Eq, Token::Num("0".into()),Token::Semi,Token::Write,
-            Token::Id("fact".into()), Token::Semi,Token::End,Token::EndFile];
+            Token::Read,
+            Token::Id("x".into()),
+            Token::Semi,
+            Token::If,
+            Token::Num("0".into()),
+            Token::Lt,
+            Token::Id("x".into()),
+            Token::Then,
+            Token::Id("fact".into()),
+            Token::Assign,
+            Token::Num("1".into()),
+            Token::Semi,
+            Token::Repeat,
+            Token::Id("fact".into()),
+            Token::Assign,
+            Token::Id("fact".into()),
+            Token::Times,
+            Token::Id("x".into()),
+            Token::Semi,
+            Token::Id("x".into()),
+            Token::Assign,
+            Token::Id("x".into()),
+            Token::Minus,
+            Token::Num("1".into()),
+            Token::Semi,
+            Token::Until,
+            Token::Id("x".into()),
+            Token::Eq,
+            Token::Num("0".into()),
+            Token::Semi,
+            Token::Write,
+            Token::Id("fact".into()),
+            Token::Semi,
+            Token::End,
+            Token::EndFile,
+        ];
         loop {
             let token = scanner.get_token2();
             tokens.push(token.clone());
