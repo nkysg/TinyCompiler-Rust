@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::fmt;
 use std::fmt::Formatter;
 
@@ -61,3 +62,5 @@ impl fmt::Display for Token {
         }
     }
 }
+
+impl Error for Token {}
