@@ -48,10 +48,10 @@ pub struct TreeNode {
     pub sibling: Option<Box<TreeNode>>,
 
     // XXX FIXME YSG
-    line_number: i32,
+    pub line_number: i32,
     node_kind: NodeKind,
-    expression_type: ExpressionType,
-    kind: Kind,
+    pub expression_type: ExpressionType,
+    pub kind: Kind,
     pub attr: Attr,
 }
 
