@@ -204,9 +204,10 @@ impl Parser {
 mod tests {
     use crate::parser::Parser;
     use crate::token::Token;
+    use anyhow::Result;
 
     #[test]
-    fn test_parse() {
+    fn test_parse() -> Result<()> {
         let tokens = vec![
             Token::Read,
             Token::Id("x".into()),
@@ -243,7 +244,7 @@ mod tests {
             Token::EndFile,
         ];
         let mut parser = Parser::new(tokens);
-        let node = parser.parse();
-        assert!(node.is_ok());
+        let _node = parser.parse()?;
+        Ok(())
     }
 }
