@@ -141,7 +141,7 @@ impl Parser {
             p.attr = Attr::Op(token.clone());
             t = p;
             self.match_token(token.clone());
-            t.child[0] = Some(Box::new(self.term()?));
+            t.child[1] = Some(Box::new(self.term()?));
         }
         Ok(t)
     }
@@ -244,7 +244,8 @@ mod tests {
             Token::EndFile,
         ];
         let mut parser = Parser::new(tokens);
-        let _node = parser.parse()?;
+        let node = parser.parse()?;
+        println!("{}", node);
         Ok(())
     }
 }
