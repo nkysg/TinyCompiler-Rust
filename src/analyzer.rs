@@ -160,10 +160,27 @@ impl Analyzer {
     }
 
     fn type_traverse(
-        _node: &mut Option<Box<TreeNode>>,
-        _pre_order: TypeEmptyCallback,
-        _post_order: TypeCheckCallback,
+        node: &mut Option<Box<TreeNode>>,
+        pre_order: TypeEmptyCallback,
+        post_order: TypeCheckCallback,
     ) -> Result<()> {
+        match node {
+            Some(_) => {
+                pre_order(node)?;
+
+                if let Some(node1) = node {
+                    for elem in node1.child.iter_mut() {
+                        Self::type_traverse(elem, pre_order, post_order)?;
+                    }
+                }
+
+                post_order(node)?;
+                if let Some(node1) = node {
+                    Self::type_traverse(&mut node1.sibling, pre_order, post_order)?;
+                }
+            }
+            None => {}
+        }
         Ok(())
     }
 }
