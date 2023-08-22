@@ -20,9 +20,9 @@ fn insert_node(analyzer: &mut Analyzer, sym_table: &mut SymTable, node: &Option<
     if let Some(node) = node {
         match &node.kind {
             Kind::Statement(stmt) => match stmt {
-                StatementKind::AssignK | StatementKind::RepeatK => {
+                StatementKind::AssignK | StatementKind::ReadK => {
                     if let Attr::Name(str) = &node.attr {
-                        if sym_table.st_lookup(str.as_str()).is_some() {
+                        if sym_table.st_lookup(str.as_str()).is_none() {
                             sym_table.st_insert(
                                 str.as_str(),
                                 node.line_number,
@@ -38,7 +38,7 @@ fn insert_node(analyzer: &mut Analyzer, sym_table: &mut SymTable, node: &Option<
             Kind::Expression(expr) => {
                 if expr == &ExpressionKind::IdK {
                     if let Attr::Name(str) = &node.attr {
-                        if sym_table.st_lookup(str.as_str()).is_some() {
+                        if sym_table.st_lookup(str.as_str()).is_none() {
                             sym_table.st_insert(
                                 str.as_str(),
                                 node.line_number,
@@ -127,8 +127,9 @@ impl Analyzer {
     }
 
     fn add_location(&mut self) -> i32 {
+        let val = self.location;
         self.location += 1;
-        self.location
+        val
     }
 
     fn insert_sym_table(
@@ -181,6 +182,59 @@ impl Analyzer {
             }
             None => {}
         }
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::analyzer::Analyzer;
+    use crate::parser::Parser;
+    use crate::token::Token;
+    use anyhow::Result;
+
+    #[test]
+    fn test_analyze() -> Result<()> {
+        let tokens = vec![
+            Token::Read,
+            Token::Id("x".into()),
+            Token::Semi,
+            Token::If,
+            Token::Num("0".into()),
+            Token::Lt,
+            Token::Id("x".into()),
+            Token::Then,
+            Token::Id("fact".into()),
+            Token::Assign,
+            Token::Num("1".into()),
+            Token::Semi,
+            Token::Repeat,
+            Token::Id("fact".into()),
+            Token::Assign,
+            Token::Id("fact".into()),
+            Token::Times,
+            Token::Id("x".into()),
+            Token::Semi,
+            Token::Id("x".into()),
+            Token::Assign,
+            Token::Id("x".into()),
+            Token::Minus,
+            Token::Num("1".into()),
+            Token::Until,
+            Token::Id("x".into()),
+            Token::Eq,
+            Token::Num("0".into()),
+            Token::Semi,
+            Token::Write,
+            Token::Id("fact".into()),
+            Token::End,
+            Token::EndFile,
+        ];
+        let mut parser = Parser::new(tokens);
+        let node = parser.parse()?;
+        let mut analyzer = Analyzer::new();
+        let sym_table = analyzer.build_symbol_table(&Some(Box::new(node)));
+        println!("{:#?}", sym_table);
         Ok(())
     }
 }

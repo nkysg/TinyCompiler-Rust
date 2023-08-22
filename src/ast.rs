@@ -97,7 +97,7 @@ impl TreeNode {
         writeln!(f, "cnt = {} ", *indent_count)?;
 
         {
-            let str = std::iter::repeat(" ").take(*indent_count).collect::<String>();
+            let str = " ".repeat(*indent_count);
 
             match &self.kind {
                 Kind::Statement(stmt) => match stmt {
@@ -114,11 +114,8 @@ impl TreeNode {
                 },
             }
 
-
-            for elem in self.child.iter() {
-                if let Some(node) = elem {
-                    node.print_tree(f, indent_count)?;
-                }
+            for elem in self.child.iter().flatten() {
+                elem.print_tree(f, indent_count)?;
             }
 
             if let Some(node) = &self.sibling {
