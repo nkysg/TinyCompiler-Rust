@@ -63,21 +63,31 @@ fn type_node(node: &mut Option<Box<TreeNode>>) -> Result<()> {
             Kind::Statement(stmt) => match stmt {
                 StatementKind::IfK | StatementKind::AssignK | StatementKind::WriteK => {
                     if node.child[0].is_none() {
-                        return Err(anyhow::format_err!("{:#?} {:#?}", stmt, node));
+                        return Err(anyhow::format_err!("1 {:#?} {}", stmt, node));
                     }
                     if let Some(node2) = &node.child[0] {
-                        if node2.expression_type != ExpressionType::Integer {
-                            return Err(anyhow::format_err!("{:#?} {:#?}", stmt, node));
+                        match stmt {
+                            StatementKind::IfK => {
+                                if node2.expression_type == ExpressionType::Integer {
+                                    return Err(anyhow::format_err!("2 {:#?} {:#?}", stmt, node));
+                                }
+                            }
+                            StatementKind::AssignK | StatementKind::WriteK => {
+                                if node2.expression_type != ExpressionType::Integer {
+                                    return Err(anyhow::format_err!("2 {:#?} {:#?}", stmt, node));
+                                }
+                            }
+                            _ => {}
                         }
                     }
                 }
                 StatementKind::RepeatK => {
                     if node.child[1].is_none() {
-                        return Err(anyhow::format_err!("{:#?} {:#?}", stmt, node));
+                        return Err(anyhow::format_err!("{:#?} {}", stmt, node));
                     }
                     if let Some(node2) = &node.child[1] {
                         if node2.expression_type != ExpressionType::Boolean {
-                            return Err(anyhow::format_err!("{:#?} {:#?}", stmt, node));
+                            return Err(anyhow::format_err!("3 {:#?} {}", stmt, node));
                         }
                     }
                 }
@@ -86,14 +96,14 @@ fn type_node(node: &mut Option<Box<TreeNode>>) -> Result<()> {
             Kind::Expression(expr) => match expr {
                 ExpressionKind::Opk => {
                     if node.child[0].is_none() || node.child[1].is_none() {
-                        return Err(anyhow::format_err!("{:#?} {:#?}", expr, node));
+                        return Err(anyhow::format_err!("4 {:#?} {}", expr, node));
                     }
 
                     if let (Some(node2), Some(node3)) = (&node.child[0], &node.child[1]) {
                         if node2.expression_type != ExpressionType::Integer
                             || node3.expression_type != ExpressionType::Integer
                         {
-                            return Err(anyhow::format_err!("{:#?} {:#?}", expr, node));
+                            return Err(anyhow::format_err!("5 {:#?} {}", expr, node));
                         }
                     }
 
@@ -235,6 +245,51 @@ mod tests {
         let mut analyzer = Analyzer::new();
         let sym_table = analyzer.build_symbol_table(&Some(Box::new(node)));
         println!("{:#?}", sym_table);
+        Ok(())
+    }
+
+    #[test]
+    fn test_analyze_type_check() -> Result<()> {
+        let tokens = vec![
+            Token::Read,
+            Token::Id("x".into()),
+            Token::Semi,
+            Token::If,
+            Token::Num("0".into()),
+            Token::Lt,
+            Token::Id("x".into()),
+            Token::Then,
+            Token::Id("fact".into()),
+            Token::Assign,
+            Token::Num("1".into()),
+            Token::Semi,
+            Token::Repeat,
+            Token::Id("fact".into()),
+            Token::Assign,
+            Token::Id("fact".into()),
+            Token::Times,
+            Token::Id("x".into()),
+            Token::Semi,
+            Token::Id("x".into()),
+            Token::Assign,
+            Token::Id("x".into()),
+            Token::Minus,
+            Token::Num("1".into()),
+            Token::Until,
+            Token::Id("x".into()),
+            Token::Eq,
+            Token::Num("0".into()),
+            Token::Semi,
+            Token::Write,
+            Token::Id("fact".into()),
+            Token::End,
+            Token::EndFile,
+        ];
+        let mut parser = Parser::new(tokens);
+        let node = parser.parse()?;
+        let mut node1 = Some(Box::new(node));
+        Analyzer::type_check(&mut node1)?;
+        println!("{}", node1.unwrap());
         Ok(())
     }
 }

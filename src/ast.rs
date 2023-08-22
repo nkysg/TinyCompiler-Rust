@@ -1,13 +1,13 @@
 use crate::token::Token;
 use std::fmt::{Display, Formatter};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum NodeKind {
     StatementK,
     ExpressionK,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum StatementKind {
     IfK,
     RepeatK,
@@ -16,27 +16,27 @@ pub enum StatementKind {
     WriteK,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum ExpressionKind {
     Opk,
     ConstK,
     IdK,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum ExpressionType {
     Void,
     Integer,
     Boolean,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum Kind {
     Statement(StatementKind),
     Expression(ExpressionKind),
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum Attr {
     Op(Token),
     Val(i32),
@@ -54,7 +54,7 @@ impl Display for Attr {
     }
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct TreeNode {
     pub child: Vec<Option<Box<TreeNode>>>,
     pub sibling: Option<Box<TreeNode>>,
@@ -94,7 +94,7 @@ impl TreeNode {
     // XXX FIXME YSG implement with loop
     fn print_tree(&self, f: &mut Formatter<'_>, indent_count: &mut usize) -> std::fmt::Result {
         *indent_count += 2;
-        writeln!(f, "cnt = {} ", *indent_count)?;
+        // writeln!(f, "cnt = {} ", *indent_count)?;
 
         {
             let str = " ".repeat(*indent_count);
